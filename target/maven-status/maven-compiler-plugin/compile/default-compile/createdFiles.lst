@@ -1,0 +1,9 @@
+com\tma\spring\jms\JmsProducer$1.class
+com\tma\spring\mbean\StudentServiceImplMBean.class
+com\tma\spring\entity\Student.class
+com\tma\spring\jms\JmsProducer.class
+com\tma\spring\Test$1.class
+com\tma\spring\service\StudentServiceImpl.class
+com\tma\spring\Test.class
+com\tma\spring\AppMain.class
+com\tma\spring\jms\JmsConsumer.class
