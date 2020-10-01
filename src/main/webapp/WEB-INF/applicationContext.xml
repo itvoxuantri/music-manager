@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:tx="http://www.springframework.org/schema/tx" xmlns:mvc="http://www.springframework.org/schema/mvc"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:tx="http://www.springframework.org/schema/tx"
+	xmlns:mvc="http://www.springframework.org/schema/mvc"
 	xmlns:jee="http://www.springframework.org/schema/jee"
 	xsi:schemaLocation="
   http://www.springframework.org/schema/beans
@@ -18,8 +20,10 @@
 	<!-- Step 1: Define Database DataSource / connection pool -->
 	<bean id="myDataSource"
 		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
-		<property name="driverClassName" value="org.mariadb.jdbc.Driver" />
-		<property name="url" value="jdbc:mariadb://localhost:3306/test" />
+		<property name="driverClassName"
+			value="org.mariadb.jdbc.Driver" />
+		<property name="url"
+			value="jdbc:mariadb://localhost:3306/test" />
 		<property name="username" value="root" />
 		<property name="password" value="root" />
 	</bean>
@@ -44,14 +48,17 @@
 	</bean>
 
 	<!-- Step 4: Enable configuration of transactional behavior based on annotations -->
-	<tx:annotation-driven transaction-manager="myTransactionManager" />
+	<tx:annotation-driven
+		transaction-manager="myTransactionManager" />
 
 
-	<!-- config MbeanServer -->
-	<bean id="exporter" class="org.springframework.jmx.export.MBeanExporter">
+	<!-- config mbean student -->
+	<bean id="exporterStudent"
+		class="org.springframework.jmx.export.MBeanExporter">
 		<property name="beans">
 			<map>
-				<entry key="bean:name=studentService" value-ref="studentServiceProxy" />
+				<entry key="bean:name=studentService"
+					value-ref="studentServiceProxy" />
 			</map>
 		</property>
 	</bean>
@@ -60,7 +67,8 @@
 		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
 		<property name="target" ref="studentService"></property>
 		<property name="proxyTargetClass" value="true"></property>
-		<property name="transactionManager" ref="myTransactionManager"></property>
+		<property name="transactionManager"
+			ref="myTransactionManager"></property>
 		<property name="transactionAttributes">
 			<props>
 				<prop key="*">PROPAGATION_REQUIRED
@@ -69,23 +77,123 @@
 		</property>
 	</bean>
 
-	<bean id="studentService" class="com.tma.spring.service.StudentServiceImpl">
+	<bean id="studentService"
+		class="com.tma.spring.service.StudentServiceImpl">
 		<constructor-arg ref="sessionFactory" />
 		<constructor-arg ref="jmsProducer" />
 	</bean>
 
-	<bean id="beanServer" class="java.lang.management.ManagementFactory"
+	<!-- config mbean category -->
+	<bean id="exporterCategory"
+		class="org.springframework.jmx.export.MBeanExporter">
+		<property name="beans">
+			<map>
+				<entry key="bean:name=categoryService"
+					value-ref="categoryServiceProxy" />
+			</map>
+		</property>
+	</bean>
+
+	<bean id="categoryServiceProxy"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="target" ref="categoryService"></property>
+		<property name="proxyTargetClass" value="true"></property>
+		<property name="transactionManager"
+			ref="myTransactionManager"></property>
+		<property name="transactionAttributes">
+			<props>
+				<prop key="*">PROPAGATION_REQUIRED
+				</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="categoryService"
+		class="com.tma.spring.service.CategoryServiceImpl">
+		<constructor-arg ref="sessionFactory" />
+		<constructor-arg ref="jmsProducer" />
+	</bean>
+
+	<!-- config mbean author -->
+	<bean id="exporterAuthor"
+		class="org.springframework.jmx.export.MBeanExporter">
+		<property name="beans">
+			<map>
+				<entry key="bean:name=authorService"
+					value-ref="authorServiceProxy" />
+			</map>
+		</property>
+	</bean>
+
+	<bean id="authorServiceProxy"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="target" ref="authorService"></property>
+		<property name="proxyTargetClass" value="true"></property>
+		<property name="transactionManager"
+			ref="myTransactionManager"></property>
+		<property name="transactionAttributes">
+			<props>
+				<prop key="*">PROPAGATION_REQUIRED
+				</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="authorService"
+		class="com.tma.spring.service.AuthorServiceImpl">
+		<constructor-arg ref="sessionFactory" />
+		<constructor-arg ref="jmsProducer" />
+	</bean>
+
+	<!-- config mbean music -->
+	<bean id="exporterMusic"
+		class="org.springframework.jmx.export.MBeanExporter">
+		<property name="beans">
+			<map>
+				<entry key="bean:name=musicService"
+					value-ref="musicServiceProxy" />
+			</map>
+		</property>
+	</bean>
+
+	<bean id="musicServiceProxy"
+		class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+		<property name="target" ref="musicService"></property>
+		<property name="proxyTargetClass" value="true"></property>
+		<property name="transactionManager"
+			ref="myTransactionManager"></property>
+		<property name="transactionAttributes">
+			<props>
+				<prop key="*">PROPAGATION_REQUIRED
+				</prop>
+			</props>
+		</property>
+	</bean>
+
+	<bean id="musicService"
+		class="com.tma.spring.service.MusicServiceImpl">
+		<constructor-arg ref="sessionFactory" />
+		<constructor-arg ref="jmsProducer" />
+	</bean>
+
+
+	<!-- config bean server -->
+	<bean id="beanServer"
+		class="java.lang.management.ManagementFactory"
 		factory-method="getPlatformMBeanServer">
 	</bean>
 
 
 	<!-- config bean jms -->
 
-	<jee:jndi-lookup id="connectionFactory" jndi-name="java:/ConnectionFactory"></jee:jndi-lookup>
+	<jee:jndi-lookup id="connectionFactory"
+		jndi-name="java:/ConnectionFactory"></jee:jndi-lookup>
 
-	<jee:jndi-lookup id="testTopic" jndi-name="java:/jms/topic/testTopic"></jee:jndi-lookup>
+	<jee:jndi-lookup id="testTopic"
+		jndi-name="java:/jms/topic/testTopic"></jee:jndi-lookup>
 
-	<bean id="jmsTemplate" class="org.springframework.jms.core.JmsTemplate">
+	<bean id="jmsTemplate"
+		class="org.springframework.jms.core.JmsTemplate">
 		<property name="connectionFactory" ref="connectionFactory" />
 		<property name="receiveTimeout" value="10000" />
 	</bean>

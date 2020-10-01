@@ -1,6 +1,8 @@
 package com.tma.spring;
 
 import java.net.URISyntaxException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Properties;
 
 import javax.jms.Connection;
@@ -23,7 +25,10 @@ import javax.naming.InitialContext;
 
 import org.wildfly.naming.client.WildFlyInitialContextFactory;
 
-import com.tma.spring.entity.Student;
+import com.tma.spring.entity.Music;
+import com.tma.spring.mbean.AuthorServiceImplMBean;
+import com.tma.spring.mbean.CategoryServiceImplMBean;
+import com.tma.spring.mbean.MusicServiceImplMBean;
 import com.tma.spring.mbean.StudentServiceImplMBean;
 
 public class Test {
@@ -38,9 +43,23 @@ public class Test {
 			JMXServiceURL url = new JMXServiceURL("service:jmx:remote+http://localhost:9990");
 			jmxc = JMXConnectorFactory.connect(url, null);
 			MBeanServerConnection mbsc = jmxc.getMBeanServerConnection();
-			ObjectName mbeanName = new ObjectName("bean:name=studentService");
-			StudentServiceImplMBean studentService = JMX.newMBeanProxy(mbsc, mbeanName, StudentServiceImplMBean.class,
+			ObjectName mbeanStudent = new ObjectName("bean:name=studentService");
+
+			ObjectName mbeanCategory = new ObjectName("bean:name=categoryService");
+
+			ObjectName mbeanAuthor = new ObjectName("bean:name=authorService");
+
+			ObjectName mbeanMusic = new ObjectName("bean:name=musicService");
+			StudentServiceImplMBean studentService = JMX.newMBeanProxy(mbsc, mbeanStudent,
+					StudentServiceImplMBean.class, true);
+
+			CategoryServiceImplMBean categoryService = JMX.newMBeanProxy(mbsc, mbeanCategory,
+					CategoryServiceImplMBean.class, true);
+
+			AuthorServiceImplMBean authorService = JMX.newMBeanProxy(mbsc, mbeanAuthor, AuthorServiceImplMBean.class,
 					true);
+
+			MusicServiceImplMBean musicService = JMX.newMBeanProxy(mbsc, mbeanMusic, MusicServiceImplMBean.class, true);
 
 			// Remote jms to wildFly
 			Properties env = new Properties();
@@ -71,11 +90,13 @@ public class Test {
 				}
 
 			});
+			Thread.sleep(10 * 1000l);
 
-			Thread.sleep(5 * 1000l);
-			Student student = new Student("John", "16130628");
-			studentService.createRecord(student);
-			Thread.sleep(5 * 1000l);
+			Music author = new Music("Duyên Phận", authorService.findRecordById(1), categoryService.findRecordById(1),
+					(Date) new SimpleDateFormat("dd/MM/yyyy").parse("28/01/1998"));
+			musicService.createRecord(author);
+			
+			Thread.sleep(10 * 1000l);
 		} finally {
 			if (jmxc != null || initialContext != null || consumer != null || connection != null) {
 				try {

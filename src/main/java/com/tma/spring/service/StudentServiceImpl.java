@@ -14,6 +14,7 @@ import org.hibernate.SessionFactory;
 import com.tma.spring.entity.Student;
 import com.tma.spring.jms.JmsProducer;
 import com.tma.spring.mbean.StudentServiceImplMBean;
+import com.tma.spring.util.Util;
 
 public class StudentServiceImpl extends NotificationBroadcasterSupport implements StudentServiceImplMBean {
 
@@ -31,7 +32,7 @@ public class StudentServiceImpl extends NotificationBroadcasterSupport implement
 	public void createRecord(Student student) {
 		Session sessionObj = sessionFactory.getCurrentSession();
 		sessionObj.save(student);
-		jmsProducer.sendMessage("Inserted " + student.toString() + " at " + new Date().toString());
+		jmsProducer.sendMessage("Inserted " + student.toString() + " at " + Util.convertDatetimeToString(new Date()));
 
 	}
 
